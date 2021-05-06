@@ -3,30 +3,51 @@ import { render, screen } from '@testing-library/react';
 import Episode from './../Episode';
 
 const testEpisode = {
-    id:1,
-    name: "",
-    image: "http://static.tvmaze.com/uploads/images/medium_landscape/67/168918.jpg",
-    season: 1,
-    number: 1,
-    summary: "",
-    runtime: 1
-}
+  id: 1,
+  name: '',
+  image:
+    'http://static.tvmaze.com/uploads/images/medium_landscape/67/168918.jpg',
+  season: 1,
+  number: 1,
+  summary: 'this is a ROCKING test',
+  runtime: 1,
+};
 
 const testEpisodeWithoutImage = {
-    //Add in approprate test data structure here.
-}
+  //Add in approprate test data structure here.
+  id: 1,
+  name: '',
+  image: null,
+  season: 1,
+  number: 1,
+  summary: '',
+  runtime: 1,
+};
 
-test("renders without error", () => {
-
+test('renders without error', () => {
+  render(<Episode episode={testEpisode} />);
+  const summary = screen.queryByText('this is a ROCKING test');
+  console.log(summary);
+  expect(summary).toBeInTheDocument();
+  expect(summary).toBeTruthy();
+  expect(summary).toHaveTextContent('this is a ROCKING test');
 });
 
-test("renders the summury test passed as prop", ()=>{
-    
+test('renders the summary test passed as prop', () => {
+  render(<Episode episode={testEpisode} />);
+  let summary = screen.getByText(`${testEpisode.summary}`);
+  expect(summary).toBeInTheDocument();
+  expect(summary).toBeTruthy();
+  expect(summary).toHaveTextContent('this is a ROCKING test');
 });
 
-test("renders default image when image is not defined", ()=>{
-    
-})
+test('renders default image when image is not defined', () => {
+  render(<Episode episode={testEpisodeWithoutImage} />);
+  let img = document.getElementsByTagName('img')[0];
+  expect(img).toBeInTheDocument();
+  expect(img.alt).toEqual('./stranger_things.png');
+  // screen.debug(); // prints to the terminal
+});
 
 //Tasks
 //1. Complete a test that shows the Episode component renders. Pass in the provided example episode data as a test prop.

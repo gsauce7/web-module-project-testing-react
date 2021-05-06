@@ -1,20 +1,55 @@
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
+import Display from './../Display.js';
 
+const testShow = {
+  name: 'Gabriel and THE APPLICATION TEST',
+  summary: 'Gabriel performs an amazing test!',
+  seasons: [{ id: 0, name: 'Season 1', episodes: [] }],
+};
 
+const displayFunc = (data) => {
+  console.log(data);
+};
 
+test('renders without any props', () => {
+  render(<Display />);
+});
 
+test('test that the show component displays', () => {
+  render(<Display displayFun={displayFunc} />);
+  const button = screen.getByRole('button');
+  userEvent.click(button);
+  const show = screen.queryByTestId('show-container');
+  waitFor(() => expect(show).toBeInTheDocument());
+});
 
+test('test if the options rendered to the screen are the various seasons of the show', () => {
+  render(<Display show={testShow} />);
+  const button = screen.getByRole('button');
+  userEvent.click(button);
 
+  waitFor(() =>
+    expect(screen.getAllByTestId('season-option')).toHaveLength(
+      testShow.seasons.length
+    )
+  );
+});
 
+test('test if optional function is being called', () => {
+  const fakeClick = jest.fn();
+  render(<Display handleclick={fakeClick} />);
 
+  const button = screen.getByRole('button');
+  userEvent.click(button);
 
-
-
-
-
+  waitFor(() => expect(fakeClick).toHaveBeenCalledTimes(1));
+});
 
 ///Tasks:
-//1. Add in nessisary imports and values to establish the testing suite.
+//1. Add in necessary imports and values to establish the testing suite.
 //2. Test that the Display component renders without any passed in props.
 //3. Rebuild or copy a show test data element as used in the previous set of tests.
 //4. Test that when the fetch button is pressed, the show component will display. Make sure to account for the api call and change of state in building your test.
